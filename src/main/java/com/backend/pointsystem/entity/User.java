@@ -1,6 +1,8 @@
 package com.backend.pointsystem.entity;
 
 import com.backend.pointsystem.common.BaseEntity;
+import com.backend.pointsystem.utils.PasswordUtil;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,7 +26,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
@@ -40,5 +42,18 @@ public class User extends BaseEntity {
     @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "cart_id")
     private Cart cart;
+
+
+    @Builder
+    public User(String name, String username, String password, int asset) {
+        this.name = name;
+        this.username = username;
+        this.password = PasswordUtil.encode(password);
+        this.asset = asset;
+    }
+
+    public static User createUser(String name, String username, String password, int asset) {
+        return new User(name, username, password, asset);
+    }
 
 }

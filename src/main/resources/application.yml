@@ -9,7 +9,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
 #      show_sql: true
@@ -17,6 +17,12 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
     #  org.hibernate.type: tracespring:
+
+jwt:
+  token:
+    secret-key: ejclzmzlkslkpqoalzmklsdmaldadqwieqwiodjklncmdsalkdjalsjcklzczmnndasdasdjhd
+  access-token:
+    expire-length: 1800000
 
 #spring:
 #  output:
