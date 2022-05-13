@@ -1,5 +1,6 @@
 package com.backend.pointsystem.entity;
 
+import com.backend.pointsystem.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import static lombok.AccessLevel.*;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-public class OrderItem {
+public class OrderItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -28,7 +29,7 @@ public class OrderItem {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    private int orderPrice;
+    private int totalPrice;
 
     private int count;
 

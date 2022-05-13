@@ -1,12 +1,12 @@
 package com.backend.pointsystem.entity;
 
+import com.backend.pointsystem.common.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -14,7 +14,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-public class Cart {
+public class Cart extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -25,6 +25,6 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart")
-    private Set<CartItem> cartItems = new HashSet<>();
+    private List<CartItem> cartItems = new ArrayList<>();
 
 }

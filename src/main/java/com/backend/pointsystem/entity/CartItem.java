@@ -1,23 +1,29 @@
 package com.backend.pointsystem.entity;
 
-import lombok.AccessLevel;
+import com.backend.pointsystem.common.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import static javax.persistence.FetchType.*;
-import static javax.persistence.GenerationType.*;
-import static lombok.AccessLevel.*;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-public class CartItem {
+public class CartItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private int count;
+
+    @Column(nullable = false)
+    private int totalPrice;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "cart_id")
