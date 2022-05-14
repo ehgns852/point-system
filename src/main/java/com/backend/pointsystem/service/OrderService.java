@@ -27,28 +27,48 @@ public class OrderService {
     public Long createOrder(CreateOrderRequest request) {
         User user = userUtil.findCurrentUser();
 
-        List<Item> items = request.getItemIds().stream()
-                .map(id -> itemRepository.findById(id)
-                        .orElseThrow(() -> new ItemNotFoundException("해당 상품을 찾을 수 없습니다.")))
-                .collect(Collectors.toList());
+        List<Item> items = getItems(request);
 
         List<OrderItem> orderItems = createOrderItems(request, user, items);
 
         return orderRepository.save(Order.createOrder(user, orderItems)).getId();
     }
 
+    private List<Item> getItems(CreateOrderRequest request) {
+        return request.getItemIds().stream()
+                .map(id -> itemRepository.findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException("해당 상품을 찾을 수 없습니다.")))
+                .collect(Collectors.toList());
+    }
+
     private List<OrderItem> createOrderItems(CreateOrderRequest request, User user, List<Item> items) {
         List<OrderItem> orderItems = new ArrayList<>();
 
         for (Item item : items) {
-            int totalPrice = item.getPrice() * request.getCount();
-            int earnPoint = (int) (totalPrice * (item.getPointRatio() * 0.01));
+            int totalPrice = getTotalPrice(request.getCount(), item.getPrice());
+            int earnPoint = getEarnPoint(item.getPointRatio(), totalPrice);
+
             OrderItem orderItem = OrderItem.createOrderItem(item, request.getPaymentMethod(), totalPrice, request.getCount());
-            if (request.getPaymentMethod() == PaymentMethod.MONEY) {
+
+            if (matchPaymentMethod(request.getPaymentMethod())) {
                 user.deductMoney(totalPrice, earnPoint);
             }
+
             orderItems.add(orderItem);
         }
         return orderItems;
     }
+
+    private int getEarnPoint(int pointRatio, int totalPrice) {
+        return (int) (totalPrice * (pointRatio * 0.01));
+    }
+
+    private int getTotalPrice(int count, int price) {
+        return price * count;
+    }
+
+    private boolean matchPaymentMethod(PaymentMethod paymentMethod) {
+        return paymentMethod == PaymentMethod.MONEY;
+    }
+
 }

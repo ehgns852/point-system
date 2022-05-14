@@ -1,6 +1,10 @@
 plugins {
 	id 'org.springframework.boot' version '2.6.7'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+
+	// Spring REST Docs
+	id 'org.asciidoctor.convert' version '1.5.8'
+
 	id 'java'
 }
 
@@ -18,6 +22,14 @@ repositories {
 	mavenCentral()
 }
 
+/**
+ * Spring REST Docs
+ */
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -31,8 +43,20 @@ dependencies {
 //	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// Spring REST Docs
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+/**
+ * Spring REST Docs
+ */
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
 }
 
 tasks.named('test') {
+	outputs.dir snippetsDir
 	useJUnitPlatform()
 }
