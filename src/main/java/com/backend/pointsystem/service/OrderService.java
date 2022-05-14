@@ -52,6 +52,8 @@ public class OrderService {
 
             if (matchPaymentMethod(request.getPaymentMethod())) {
                 user.deductMoney(totalPrice, earnPoint);
+            } else {
+                user.deductPoint(totalPrice);
             }
 
             orderItems.add(orderItem);

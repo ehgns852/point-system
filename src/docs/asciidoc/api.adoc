@@ -1,4 +1,4 @@
-= REST API HelloController
+= REST API Document
 :toc: left
 :toclevels: 4
 

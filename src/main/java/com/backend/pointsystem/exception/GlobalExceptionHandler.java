@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> userNotFountException(BusinessException e) {
         log.info(e.getMessage(), e);
         return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getMessage()));

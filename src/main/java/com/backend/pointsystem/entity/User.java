@@ -68,9 +68,17 @@ public class User extends BaseEntity {
     public void deductMoney(int totalPrice, int earnPoint) {
         int remainingAsset = this.asset - totalPrice;
         if (remainingAsset < 0) {
-            throw new LockOfMoneyException("남은 자산이 부족합니다.");
+            throw new LockOfMoneyException("자산이 부족합니다.");
         }
         this.asset = remainingAsset;
         this.point += earnPoint;
+    }
+
+    public void deductPoint(int totalPrice) {
+        int remainingPoint = this.point - totalPrice;
+        if (remainingPoint < 0) {
+            throw new LockOfMoneyException("포인트가 부족합니다.");
+        }
+        this.point = remainingPoint;
     }
 }

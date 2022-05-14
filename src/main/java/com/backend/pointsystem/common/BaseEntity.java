@@ -26,6 +26,10 @@ public abstract class BaseEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    public BaseEntity(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public BaseEntity(LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
