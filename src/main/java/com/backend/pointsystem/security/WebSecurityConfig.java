@@ -51,7 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
                 .antMatchers(HttpMethod.POST, "/api/users")
-                .antMatchers(HttpMethod.POST, "/api/users/login");
+                .antMatchers(HttpMethod.POST, "/api/users/login")
+                .antMatchers(HttpMethod.POST, "/api/items");
     }
 
     @Bean

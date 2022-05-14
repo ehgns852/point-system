@@ -18,13 +18,13 @@ public class CreateItemRequest {
     private String itemName;
 
     @NotNull
-    private int price;
+    private Integer price;
 
     @NotNull
-    private int stockQuantity;
+    private Integer stockQuantity;
 
     @NotNull
-    private int pointRatio;
+    private Integer pointRatio;
 
     @NotNull
     private String owner;

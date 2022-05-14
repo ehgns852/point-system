@@ -1,6 +1,7 @@
 package com.backend.pointsystem.entity;
 
 import com.backend.pointsystem.common.BaseEntity;
+import com.backend.pointsystem.exception.NotEnoughStockException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,18 +28,17 @@ public class Item extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    private int price;
+    private Integer price;
 
-    @Column(nullable = false)
     private int stockQuantity;
 
-    @Column(nullable = false)
     private int pointRatio;
 
     @Column(nullable = false)
     private String owner;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ItemStatus itemStatus;
 
     @OneToMany(mappedBy = "item")
@@ -67,5 +67,18 @@ public class Item extends BaseEntity {
                 .owner(owner)
                 .itemStatus(itemStatus)
                 .build();
+    }
+
+    public void removeStock(int count) {
+        int restStock = this.stockQuantity - count;
+
+        if (restStock == 0) {
+            this.itemStatus = ItemStatus.SOLD_OUT;
+        }
+        if (restStock < 0) {
+            throw new NotEnoughStockException("재고 수량이 부족합니다.");
+        }
+
+        this.stockQuantity = restStock;
     }
 }

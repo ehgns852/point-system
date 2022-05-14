@@ -24,5 +24,5 @@ public class CreateUserRequest {
     private String password;
 
     @NotNull
-    private int asset;
+    private Integer asset;
 }

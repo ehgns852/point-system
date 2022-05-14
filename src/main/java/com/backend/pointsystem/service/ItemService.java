@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemService {
 
     private final ItemRepository itemRepository;
@@ -18,7 +19,7 @@ public class ItemService {
     @Transactional
     public Long createItem(CreateItemRequest request) {
         if (request.getPointRatio() > 100 || request.getPointRatio() < 0) {
-            throw new PointRatioSettingException("포인트 비율 설정이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
+            throw new PointRatioSettingException("포인트 비율 설정이 올바르지 않습니다.");
         }
         return itemRepository.save(addItem(request)).getId();
     }

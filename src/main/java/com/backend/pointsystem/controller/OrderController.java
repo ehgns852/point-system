@@ -1,8 +1,7 @@
 package com.backend.pointsystem.controller;
 
-import com.backend.pointsystem.dto.request.CreateItemRequest;
-import com.backend.pointsystem.dto.response.CreateItemResponse;
-import com.backend.pointsystem.service.ItemService;
+import com.backend.pointsystem.dto.request.CreateOrderRequest;
+import com.backend.pointsystem.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/items")
-public class ItemController {
+@RequestMapping("/api/orders")
+public class OrderController {
 
-    private final ItemService itemService;
+    private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity createItem(@Validated @RequestBody CreateItemRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CreateItemResponse(itemService.createItem(request)));
+    public ResponseEntity createOrder(@Validated @RequestBody CreateOrderRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(request));
     }
 }

@@ -1,6 +1,7 @@
 package com.backend.pointsystem.entity;
 
 import com.backend.pointsystem.common.BaseEntity;
+import com.backend.pointsystem.exception.LockOfMoneyException;
 import com.backend.pointsystem.utils.PasswordUtil;
 import lombok.Builder;
 import lombok.Getter;
@@ -64,4 +65,12 @@ public class User extends BaseEntity {
                 .build();
     }
 
+    public void deductMoney(int totalPrice, int earnPoint) {
+        int remainingAsset = this.asset - totalPrice;
+        if (remainingAsset < 0) {
+            throw new LockOfMoneyException("남은 자산이 부족합니다.");
+        }
+        this.asset = remainingAsset;
+        this.point += earnPoint;
+    }
 }

@@ -6,7 +6,6 @@ import com.backend.pointsystem.repository.UserRepository;
 import com.backend.pointsystem.security.auth.PrincipleDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -38,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String username = provider.getPayload(accessToken);
 
                 User user = userRepository.findByUsername(username)
-                        .orElseThrow(() -> new UserNotFoundException("회원을 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
+                        .orElseThrow(() -> new UserNotFoundException("회원을 찾을 수 없습니다."));
 
                 PrincipleDetails principleDetails = new PrincipleDetails(user);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principleDetails, null, principleDetails.getAuthorities());

@@ -2,9 +2,9 @@ package com.backend.pointsystem.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class UserNotFoundException extends BusinessException{
+public class ItemNotFoundException extends BusinessException{
 
-    public UserNotFoundException(String message) {
+    public ItemNotFoundException(String message) {
         super(message, HttpStatus.NOT_FOUND);
     }
 }

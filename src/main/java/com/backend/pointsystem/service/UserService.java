@@ -9,7 +9,6 @@ import com.backend.pointsystem.security.jwt.JwtProvider;
 import com.backend.pointsystem.security.jwt.Token;
 import com.backend.pointsystem.utils.PasswordUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +32,12 @@ public class UserService {
     public Token login(LoginRequest request) {
 
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new UserNotFoundException("회원을 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException("회원을 찾을 수 없습니다."));
 
         PasswordEncoder encoder = PasswordUtil.getPasswordEncoder();
 
         if (!encoder.matches(request.getPassword(), user.getPassword())) {
-            throw new UserNotFoundException("회원을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException("회원을 찾을 수 없습니다.");
         }
 
         return jwtProvider.createToken(user.getUsername());
