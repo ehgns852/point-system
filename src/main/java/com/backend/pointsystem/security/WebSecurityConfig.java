@@ -52,7 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers(HttpMethod.POST, "/api/users")
                 .antMatchers(HttpMethod.POST, "/api/users/login")
-                .antMatchers(HttpMethod.POST, "/api/items");
+                .antMatchers(HttpMethod.POST, "/api/items")
+                .antMatchers("/docs/**");
     }
 
     @Bean

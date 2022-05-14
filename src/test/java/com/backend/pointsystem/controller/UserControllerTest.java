@@ -1,9 +1,11 @@
 package com.backend.pointsystem.controller;
 
 import com.backend.pointsystem.dto.request.CreateUserRequest;
+import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.security.WebSecurityConfig;
 import com.backend.pointsystem.security.jwt.JwtAuthenticationFilter;
 import com.backend.pointsystem.security.jwt.JwtProvider;
+import com.backend.pointsystem.security.jwt.Token;
 import com.backend.pointsystem.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,10 +32,13 @@ import java.nio.charset.StandardCharsets;
 
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -70,7 +75,7 @@ class UserControllerTest {
 
 
     @Test
-    @DisplayName("유저 회원가입 테스트 - 성공")
+    @DisplayName("유저 회원가입 - 성공")
     void accountUser() throws Exception {
         //given
         given(userService.signUp(any(CreateUserRequest.class))).willReturn(1L);
@@ -83,6 +88,7 @@ class UserControllerTest {
 
         //then
         result.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.userId").value(1L))
                 .andDo(document("user/create",
                         requestFields(
                                 fieldWithPath("name").description("회원 이름"),
@@ -93,6 +99,38 @@ class UserControllerTest {
                         responseFields(
                                 fieldWithPath("userId").description("회원 PK")
                         )));
+
+        verify(userService, times(1)).signUp(any(CreateUserRequest.class));
+
+    }
+
+    @Test
+    @DisplayName("회원 로그인 - 성공")
+    void login() throws Exception {
+        //given
+        LoginRequest request = new LoginRequest("ehgns852", "123123");
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlaGduczg1MiIsImlhdCI6MTY1MjU1MTQ3MywiZXhwIjoxNjUyNTUzMjczfQ.b1NVO7HODNhEL6_YfIRBFJpRmu1JElErY1LXtDXFJ_I";
+        given(userService.login(any(LoginRequest.class))).willReturn(new Token(token));
+
+        //when
+        ResultActions result = mockMvc.perform(post("/api/users/login")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8));
+
+        //then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value(token))
+                .andExpect(jsonPath("$.accessToken").isNotEmpty())
+                .andDo(document("user/login",
+                        requestFields(
+                                fieldWithPath("username").description("회원 ID"),
+                                fieldWithPath("password").description("비밀 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("accessToken").description("JWT Access Token")
+                        )));
+        verify(userService, times(1)).login(any(LoginRequest.class));
 
     }
 

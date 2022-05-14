@@ -1,20 +1,42 @@
-## REST API Document
 ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
-== REQUEST
+## REST API Document
+
+== 회원가입 API
+
+=== Request
 
 include::{snippets}/user/create/http-request.adoc[]
 
-== RESPONSE
+=== Request Field
+
+include::{snippets}/user/create/request-fields.adoc[]
+
+=== Response
 
 include::{snippets}/user/create/http-response.adoc[]
 
-== REQUEST BODY
-
-include::{snippets}/user/create/request-body.adoc[]
-
-== RESPONSE BODY
+=== Response Field
 
 include::{snippets}/user/create/response-fields.adoc[]
+
+== 회원 로그인 API
+
+=== Request
+
+include::{snippets}/user/login/http-request.adoc[]
+
+=== Request Field
+
+include::{snippets}/user/login/request-fields.adoc[]
+
+=== Response
+
+include::{snippets}/user/login/http-response.adoc[]
+
+=== Response Field
+
+include::{snippets}/user/login/response-fields.adoc[]
+
