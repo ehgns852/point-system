@@ -52,8 +52,16 @@ public class User extends BaseEntity {
         this.asset = asset;
     }
 
+    /**
+     * 생성 메서드
+     */
     public static User createUser(String name, String username, String password, int asset) {
-        return new User(name, username, password, asset);
+        return User.builder()
+                .name(name)
+                .username(username)
+                .password(password)
+                .asset(asset)
+                .build();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.backend.pointsystem.entity;
 
 import com.backend.pointsystem.common.BaseEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -43,4 +44,28 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item")
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @Builder
+    public Item(String name, int price, int stockQuantity, int pointRatio, String owner, ItemStatus itemStatus) {
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.pointRatio = pointRatio;
+        this.owner = owner;
+        this.itemStatus = itemStatus;
+    }
+
+
+    /**
+     * 생성 메서드
+     */
+    public static Item createItem(String name, int price, int stockQuantity, int pointRatio, String owner, ItemStatus itemStatus) {
+        return Item.builder()
+                .name(name)
+                .price(price)
+                .stockQuantity(stockQuantity)
+                .pointRatio(pointRatio)
+                .owner(owner)
+                .itemStatus(itemStatus)
+                .build();
+    }
 }
