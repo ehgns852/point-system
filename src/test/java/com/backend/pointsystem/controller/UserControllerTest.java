@@ -83,7 +83,7 @@ class UserControllerTest {
 
         //then
         result.andExpect(status().isCreated())
-                .andDo(document("index",
+                .andDo(document("user/create",
                         requestFields(
                                 fieldWithPath("name").description("회원 이름"),
                                 fieldWithPath("username").description("회원 ID"),

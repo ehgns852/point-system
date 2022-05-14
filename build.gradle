@@ -3,7 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 
 	// Spring REST Docs
-	id 'org.asciidoctor.convert' version '1.5.8'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 
 	id 'java'
 }
@@ -11,6 +11,21 @@ plugins {
 group = 'com.backend'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+/**
+ * Spring REST Docs
+ */
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'BOOT-INF/classes/static/docs'
+	}
+}
 
 configurations {
 	compileOnly {
@@ -22,12 +37,6 @@ repositories {
 	mavenCentral()
 }
 
-/**
- * Spring REST Docs
- */
-ext {
-	set('snippetsDir', file("build/generated-snippets"))
-}
 
 
 dependencies {
@@ -51,12 +60,28 @@ dependencies {
 /**
  * Spring REST Docs
  */
-asciidoctor {
-	inputs.dir snippetsDir
-	dependsOn test
+
+test {
+	useJUnitPlatform()
+	outputs.dir snippetsDir
 }
 
-tasks.named('test') {
-	outputs.dir snippetsDir
-	useJUnitPlatform()
+asciidoctor {
+	dependsOn test
+	inputs.dir snippetsDir
 }
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
+}
+

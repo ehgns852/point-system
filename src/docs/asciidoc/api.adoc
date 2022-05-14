@@ -1,17 +1,20 @@
-= REST API Document
-:toc: left
-:toclevels: 4
+## REST API Document
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
 
-include::{snippets}/index/curl-request.adoc[]
+== REQUEST
 
-include::{snippets}/index/http-request.adoc[]
+include::{snippets}/user/create/http-request.adoc[]
 
-include::{snippets}/index/http-response.adoc[]
+== RESPONSE
 
-include::{snippets}/index/httpie-request.adoc[]
+include::{snippets}/user/create/http-response.adoc[]
 
-include::{snippets}/index/request-body.adoc[]
+== REQUEST BODY
 
-include::{snippets}/index/response-body.adoc[]
+include::{snippets}/user/create/request-body.adoc[]
 
-include::{snippets}/index/response-fields.adoc[]
+== RESPONSE BODY
+
+include::{snippets}/user/create/response-fields.adoc[]
