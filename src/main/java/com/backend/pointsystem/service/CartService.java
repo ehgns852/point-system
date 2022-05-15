@@ -2,6 +2,7 @@ package com.backend.pointsystem.service;
 
 import com.backend.pointsystem.common.UserUtil;
 import com.backend.pointsystem.dto.request.AddItemToCartRequest;
+import com.backend.pointsystem.dto.request.BuyAllRequest;
 import com.backend.pointsystem.dto.request.CartRequest;
 import com.backend.pointsystem.entity.Cart;
 import com.backend.pointsystem.entity.CartItem;
@@ -29,7 +30,7 @@ public class CartService {
     private final UserUtil userUtil;
     private final ItemRepository itemRepository;
     private final CartItemRepository cartItemRepository;
-
+    private final OrderService orderService;
 
     @Transactional
     public Long addItemToCart(AddItemToCartRequest request) {
@@ -78,4 +79,15 @@ public class CartService {
                 .orElseThrow(() -> new CartItemNotFountException("회원의 장바구니 상품을 찾을 수 없습니다.")));
     }
 
+    @Transactional
+    public Long myCartBuyAll(BuyAllRequest request) {
+        User user = userUtil.findCurrentUser();
+
+        Cart cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new CartNotFoundException("회원의 장바구니가 존재하지 않습니다."));
+
+        List<CartItem> cartItems = cartItemRepository.findByCart(cart);
+
+        return orderService.createOrder(cartItems, request.getPaymentMethod(), user);
+    }
 }

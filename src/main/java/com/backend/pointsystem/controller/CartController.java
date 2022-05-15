@@ -1,7 +1,10 @@
 package com.backend.pointsystem.controller;
 
 import com.backend.pointsystem.dto.request.AddItemToCartRequest;
+import com.backend.pointsystem.dto.request.BuyAllRequest;
+import com.backend.pointsystem.dto.request.CreateOrderRequest;
 import com.backend.pointsystem.dto.response.AddItemToCartResponse;
+import com.backend.pointsystem.dto.response.CreateOrderResponse;
 import com.backend.pointsystem.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +27,14 @@ public class CartController {
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity deleteItemToCart(@PathVariable Long itemId) {
+    public ResponseEntity<Void> deleteItemToCart(@PathVariable Long itemId) {
         cartService.deleteItemToCart(itemId);
         return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @PostMapping("/buy-all")
+    public ResponseEntity myCartBuyAll(@Validated @RequestBody BuyAllRequest request) {
+        return ResponseEntity.status(CREATED).body(new CreateOrderResponse(cartService.myCartBuyAll(request)));
     }
 
 }
