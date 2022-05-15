@@ -1,6 +1,7 @@
 package com.backend.pointsystem.controller;
 
 import com.backend.pointsystem.dto.request.CreateOrderRequest;
+import com.backend.pointsystem.dto.response.CreateOrderResponse;
 import com.backend.pointsystem.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity createOrder(@Validated @RequestBody CreateOrderRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(request));
+    public ResponseEntity<CreateOrderResponse> createOrder(@Validated @RequestBody CreateOrderRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CreateOrderResponse(orderService.createOrder(request)));
     }
 }
