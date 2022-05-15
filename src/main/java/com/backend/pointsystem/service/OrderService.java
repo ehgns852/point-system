@@ -54,7 +54,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Long createOrder(List<CartItem> cartItems, PaymentMethod paymentMethod, User user) {
+    public Long createOrderByMyCart(List<CartItem> cartItems, PaymentMethod paymentMethod, User user) {
 
         List<OrderItem> orderItems = createOrderByCart(cartItems, paymentMethod, user);
 

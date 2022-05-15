@@ -88,6 +88,6 @@ public class CartService {
 
         List<CartItem> cartItems = cartItemRepository.findByCart(cart);
 
-        return orderService.createOrder(cartItems, request.getPaymentMethod(), user);
+        return orderService.createOrderByMyCart(cartItems, request.getPaymentMethod(), user);
     }
 }
