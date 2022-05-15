@@ -13,10 +13,10 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEntity {
 
     @CreatedDate
@@ -35,3 +35,4 @@ public abstract class BaseEntity {
         this.updatedAt = updatedAt;
     }
 }
+

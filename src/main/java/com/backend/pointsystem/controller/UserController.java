@@ -3,6 +3,7 @@ package com.backend.pointsystem.controller;
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.dto.response.CreateUserResponse;
+import com.backend.pointsystem.security.jwt.Token;
 import com.backend.pointsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@Validated @RequestBody LoginRequest request) {
+    public ResponseEntity<Token> login(@Validated @RequestBody LoginRequest request) {
         return ResponseEntity.ok(userService.login(request));
     }
 

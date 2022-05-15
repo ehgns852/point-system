@@ -45,7 +45,8 @@ public class Item extends BaseEntity {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Builder
-    public Item(String name, int price, int stockQuantity, int pointRatio, String owner, ItemStatus itemStatus) {
+    public Item(Long id, String name, int price, int stockQuantity, int pointRatio, String owner, ItemStatus itemStatus) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.stockQuantity = stockQuantity;

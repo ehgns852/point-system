@@ -41,7 +41,8 @@ public class User extends BaseEntity {
     private List<Order> orders = new ArrayList<>();
 
     @Builder
-    public User(String name, String username, String password, int asset) {
+    public User(Long id, String name, String username, String password, int asset) {
+        this.id = id;
         this.name = name;
         this.username = username;
         this.password = PasswordUtil.encode(password);

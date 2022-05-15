@@ -40,3 +40,55 @@ include::{snippets}/user/login/http-response.adoc[]
 
 include::{snippets}/user/login/response-fields.adoc[]
 
+=== Response Failure Code
+
+include::{snippets}/user/login/fail/http-response.adoc[]
+
+== 상품 생성 API
+
+
+=== Request
+
+include::{snippets}/item/create/http-request.adoc[]
+
+=== Request Field
+
+include::{snippets}/item/create/request-fields.adoc[]
+
+=== Response
+
+include::{snippets}/item/create/http-response.adoc[]
+
+=== Response Field
+
+include::{snippets}/item/create/response-fields.adoc[]
+
+=== Response Failure Code
+
+include::{snippets}/item/create/fail/http-response.adoc[]
+
+== 주문 생성 API
+
+=== Request
+
+include::{snippets}/order/create/http-request.adoc[]
+
+=== Request Field
+
+include::{snippets}/order/create/request-fields.adoc[]
+
+=== Response
+
+include::{snippets}/order/create/http-response.adoc[]
+
+=== Response Field
+
+include::{snippets}/order/create/response-fields.adoc[]
+
+=== Response Failure Code - 재고 부족
+
+include::{snippets}/order/create/fail/http-response.adoc[]
+
+=== Response Failure Code - 자산 OR 포인트 부족
+
+include::{snippets}/order/create/fail2/http-response.adoc[]

@@ -2,6 +2,7 @@ package com.backend.pointsystem.controller;
 
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
+import com.backend.pointsystem.exception.UserNotFoundException;
 import com.backend.pointsystem.security.WebSecurityConfig;
 import com.backend.pointsystem.security.jwt.JwtAuthenticationFilter;
 import com.backend.pointsystem.security.jwt.JwtProvider;
@@ -32,8 +33,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -55,9 +55,6 @@ class UserControllerTest {
 
     @MockBean
     private JwtAuthenticationFilter filter;
-
-    @MockBean
-    private JwtProvider jwtProvider;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -131,7 +128,28 @@ class UserControllerTest {
                                 fieldWithPath("accessToken").description("JWT Access Token")
                         )));
         verify(userService, times(1)).login(any(LoginRequest.class));
+    }
 
+    @Test
+    @DisplayName("회원 로그인 - 회원을 찾지 못한 경우 실패")
+    void loginFail() throws Exception{
+        //given
+        LoginRequest request = new LoginRequest("ehgns852", "123123");
+
+        doThrow(new UserNotFoundException("회원을 찾을 수 없습니다."))
+                .when(userService).login(any(LoginRequest.class));
+
+        //when
+        ResultActions result = mockMvc.perform(post("/api/users/login")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8));
+
+        //then
+        result.andExpect(status().isNotFound())
+                .andDo(document("user/login/fail"));
+
+        verify(userService, times(1)).login(any(LoginRequest.class));
     }
 
 }
