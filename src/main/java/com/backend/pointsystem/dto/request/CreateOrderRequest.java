@@ -16,12 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 public class CreateOrderRequest {
 
-    private List<Long> itemIds = new ArrayList<>();
+    @NotNull
+    private List<OrderRequest> orderRequests = new ArrayList<>();
 
     @NotNull
     private PaymentMethod paymentMethod;
-
-    @NotNull
-    private Integer count;
 
 }

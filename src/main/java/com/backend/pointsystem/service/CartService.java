@@ -7,6 +7,8 @@ import com.backend.pointsystem.entity.Cart;
 import com.backend.pointsystem.entity.CartItem;
 import com.backend.pointsystem.entity.Item;
 import com.backend.pointsystem.entity.User;
+import com.backend.pointsystem.exception.CartItemNotFountException;
+import com.backend.pointsystem.exception.CartNotFoundException;
 import com.backend.pointsystem.exception.ItemNotFoundException;
 import com.backend.pointsystem.repository.CartItemRepository;
 import com.backend.pointsystem.repository.CartRepository;
@@ -17,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,8 +45,7 @@ public class CartService {
 
     private void addCartList(Cart cart, List<CartRequest> cartRequests) {
         for (CartRequest cartItem : cartRequests) {
-            Item item = itemRepository.findById(cartItem.getItemId())
-                    .orElseThrow(() -> new ItemNotFoundException("해당 상품을 찾을 수 없습니다."));
+            Item item = getItem(cartItem.getItemId());
 
             int totalPrice = item.getPrice() * cartItem.getItemCount();
 
@@ -59,4 +59,23 @@ public class CartService {
             }
         }
     }
+
+    private Item getItem(Long itemId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ItemNotFoundException("해당 상품을 찾을 수 없습니다."));
+        return item;
+    }
+
+    @Transactional
+    public void deleteItemToCart(Long itemId) {
+        User user = userUtil.findCurrentUser();
+
+        Cart cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new CartNotFoundException("회원의 장바구니가 존재하지 않습니다."));
+        Item item = getItem(itemId);
+
+        cartItemRepository.delete(cartItemRepository.findByCartAndItem(cart, item)
+                .orElseThrow(() -> new CartItemNotFountException("회원의 장바구니 상품을 찾을 수 없습니다.")));
+    }
+
 }

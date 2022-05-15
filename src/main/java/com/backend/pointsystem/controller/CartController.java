@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,5 +23,10 @@ public class CartController {
         return ResponseEntity.status(CREATED).body(new AddItemToCartResponse(cartService.addItemToCart(request)));
     }
 
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity deleteItemToCart(@PathVariable Long itemId) {
+        cartService.deleteItemToCart(itemId);
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
 
 }
