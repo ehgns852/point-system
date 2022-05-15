@@ -16,4 +16,15 @@ public class ItemDummy {
                 .stockQuantity(100)
                 .build();
     }
+    public static Item itemDummy2() {
+        return Item.builder()
+                .id(2L)
+                .name("식빵")
+                .price(20000)
+                .itemStatus(ItemStatus.SELL)
+                .pointRatio(5)
+                .owner("opusm")
+                .stockQuantity(40)
+                .build();
+    }
 }
