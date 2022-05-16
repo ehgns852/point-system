@@ -50,7 +50,7 @@ public class CartService {
 
             int totalPrice = item.getPrice() * cartItem.getItemCount();
 
-            Optional<CartItem> findCartItem = cartItemRepository.findByItem(item);
+            Optional<CartItem> findCartItem = cartItemRepository.findByCartAndItem(cart, item);
 
             //장바구니 상품 중복 시 총 가격, 수량만 증가
             if (findCartItem.isPresent()) {
