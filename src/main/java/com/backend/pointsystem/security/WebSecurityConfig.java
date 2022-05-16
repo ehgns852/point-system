@@ -1,5 +1,6 @@
 package com.backend.pointsystem.security;
 
+import com.backend.pointsystem.security.jwt.JwtAuthenticationEntryPoint;
 import com.backend.pointsystem.security.jwt.JwtAuthenticationFilter;
 import com.backend.pointsystem.utils.PasswordUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -38,8 +40,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-//                                .exceptionHandling()
-//                                        .authenticationEntryPoint()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .formLogin().disable();
