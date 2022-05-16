@@ -77,4 +77,9 @@ public class User extends BaseEntity {
         }
         this.point = remainingPoint;
     }
+
+    public void updateUser(String name, Integer asset) {
+        this.name = name;
+        this.asset += asset;
+    }
 }

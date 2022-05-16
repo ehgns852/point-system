@@ -48,6 +48,20 @@ include::{snippets}/user/login/response-fields.adoc[]
 
 include::{snippets}/user/login/fail/http-response.adoc[]
 
+== 회원 이름 수정 및 자산 충전 API
+
+=== Request
+
+include::{snippets}/user/update/http-request.adoc[]
+
+=== Request Field
+
+include::{snippets}/user/update/request-fields.adoc[]
+
+=== Response
+
+include::{snippets}/user/update/http-response.adoc[]
+
 == 상품 생성 API
 
 

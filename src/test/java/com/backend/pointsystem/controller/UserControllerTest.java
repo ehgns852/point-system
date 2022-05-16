@@ -2,6 +2,7 @@ package com.backend.pointsystem.controller;
 
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
+import com.backend.pointsystem.dto.request.UpdateUserRequest;
 import com.backend.pointsystem.exception.DuplicateUserException;
 import com.backend.pointsystem.exception.UserNotFoundException;
 import com.backend.pointsystem.security.WebSecurityConfig;
@@ -38,6 +39,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -118,7 +120,7 @@ class UserControllerTest {
         //then
         result.andExpect(status().isBadRequest())
                 .andDo(document("user/create/fail"));
-        
+
         verify(userService, times(1)).signUp(any(CreateUserRequest.class));
     }
 
@@ -171,6 +173,27 @@ class UserControllerTest {
                 .andDo(document("user/login/fail"));
 
         verify(userService, times(1)).login(any(LoginRequest.class));
+    }
+
+    @Test
+    @DisplayName("회원 이름 수정 및 자산 충전 - 성공")
+    void updateUser() throws Exception {
+        //given
+        UpdateUserRequest request = new UpdateUserRequest("김도훈", 10000);
+
+        //when
+        ResultActions result = mockMvc.perform(patch("/api/users/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .content(objectMapper.writeValueAsString(request)));
+
+        //then
+        result.andExpect(status().isNoContent())
+                .andDo(document("user/update",
+                        requestFields(
+                                fieldWithPath("name").description("변경할 이름"),
+                                fieldWithPath("asset").description("충전할 재산"))
+                        ));
     }
 
 }

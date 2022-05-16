@@ -1,7 +1,9 @@
 package com.backend.pointsystem.service;
 
+import com.backend.pointsystem.common.UserUtil;
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
+import com.backend.pointsystem.dto.request.UpdateUserRequest;
 import com.backend.pointsystem.entity.User;
 import com.backend.pointsystem.exception.DuplicateUserException;
 import com.backend.pointsystem.exception.UserNotFoundException;
@@ -23,6 +25,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
+    private final UserUtil userUtil;
 
     @Transactional
     public Long signUp(CreateUserRequest request) {
@@ -35,6 +38,7 @@ public class UserService {
     }
 
     private void validateDuplicateUser(String username) {
+
         Optional<User> findUser = userRepository.findByUsername(username);
 
         if (findUser.isPresent()) {
@@ -58,5 +62,13 @@ public class UserService {
         if (!encoder.matches(request.getPassword(), user.getPassword())) {
             throw new UserNotFoundException("회원을 찾을 수 없습니다.");
         }
+    }
+
+    @Transactional
+    public void updateUser(UpdateUserRequest request) {
+
+        User user = userUtil.findCurrentUser();
+
+        user.updateUser(request.getName(), request.getAsset());
     }
 }

@@ -1,7 +1,9 @@
 package com.backend.pointsystem.service;
 
+import com.backend.pointsystem.common.UserUtil;
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
+import com.backend.pointsystem.dto.request.UpdateUserRequest;
 import com.backend.pointsystem.dummy.UserDummy;
 import com.backend.pointsystem.entity.User;
 import com.backend.pointsystem.exception.DuplicateUserException;
@@ -30,6 +32,9 @@ class UserServiceTest {
 
     @Mock
     private JwtProvider jwtProvider;
+
+    @Mock
+    private UserUtil userUtil;
 
     @InjectMocks
     private UserService userService;
@@ -101,6 +106,22 @@ class UserServiceTest {
 
         //then
         verify(userRepository, times(1)).findByUsername(anyString());
+    }
+
+    @Test
+    @DisplayName("회원 이름 수정 및 자산 충전 - 성공")
+    void updateUser() {
+        //given
+        User user = UserDummy.dummyUser();
+        given(userUtil.findCurrentUser()).willReturn(user);
+
+        //when
+        userService.updateUser(new UpdateUserRequest("김도훈", 100000));
+
+        //then
+        assertThat(user.getAsset()).isEqualTo(10100000);
+
+        verify(userUtil, times(1)).findCurrentUser();
     }
 
 }
