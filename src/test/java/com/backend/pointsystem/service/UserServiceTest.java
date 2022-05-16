@@ -4,10 +4,13 @@ import com.backend.pointsystem.common.UserUtil;
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.dto.request.UpdateUserRequest;
+import com.backend.pointsystem.dto.response.MyPurchaseItemResponse;
+import com.backend.pointsystem.dummy.ItemDummy;
 import com.backend.pointsystem.dummy.UserDummy;
-import com.backend.pointsystem.entity.User;
+import com.backend.pointsystem.entity.*;
 import com.backend.pointsystem.exception.DuplicateUserException;
 import com.backend.pointsystem.exception.UserNotFoundException;
+import com.backend.pointsystem.repository.OrderRepository;
 import com.backend.pointsystem.repository.UserRepository;
 import com.backend.pointsystem.security.jwt.JwtProvider;
 import com.backend.pointsystem.security.jwt.Token;
@@ -18,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +39,9 @@ class UserServiceTest {
 
     @Mock
     private UserUtil userUtil;
+
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private UserService userService;
@@ -122,6 +129,36 @@ class UserServiceTest {
         assertThat(user.getAsset()).isEqualTo(10100000);
 
         verify(userUtil, times(1)).findCurrentUser();
+    }
+
+    @Test
+    @DisplayName("내가 주문한 상품 전체 조회 - 성공")
+    void getMyItem() {
+        //given
+        User user = UserDummy.dummyUser();
+
+        Item item1 = ItemDummy.itemDummy();
+        Item item2 = ItemDummy.itemDummy2();
+
+        List<OrderItem> orderItem = List.of(OrderItem.createOrderItem(item1, PaymentMethod.MONEY, 100000, 3),
+                OrderItem.createOrderItem(item2, PaymentMethod.MONEY, 1000, 3));
+
+        List<Order> order = List.of(Order.createOrder(user, orderItem));
+
+        given(userUtil.findCurrentUser()).willReturn(user);
+        given(orderRepository.findByUser(any(User.class))).willReturn(order);
+
+        //when
+        MyPurchaseItemResponse response = userService.getMyItem();
+
+        //then
+        assertThat(response.getMyPurchaseResponses()).extracting("itemName")
+                .containsExactly("우유", "식빵");
+        assertThat(response.getMyPurchaseResponses()).extracting("totalPrice")
+                .containsExactly(100000, 1000);
+
+        verify(userUtil, times(1)).findCurrentUser();
+        verify(orderRepository, times(1)).findByUser(any(User.class));
     }
 
 }

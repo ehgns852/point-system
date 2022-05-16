@@ -4,6 +4,7 @@ import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.dto.request.UpdateUserRequest;
 import com.backend.pointsystem.dto.response.CreateUserResponse;
+import com.backend.pointsystem.dto.response.MyPurchaseItemResponse;
 import com.backend.pointsystem.security.jwt.Token;
 import com.backend.pointsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,14 @@ public class UserController {
     public ResponseEntity<Void> updateUser(@RequestBody UpdateUserRequest request) {
         userService.updateUser(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * 내가 구매한 상품 조회
+     */
+    @GetMapping("/my-item")
+    public ResponseEntity<MyPurchaseItemResponse> getMyItem() {
+        return ResponseEntity.ok(userService.getMyItem());
     }
 
 }

@@ -62,8 +62,21 @@ include::{snippets}/user/update/request-fields.adoc[]
 
 include::{snippets}/user/update/http-response.adoc[]
 
-== 상품 생성 API
+== 내가 구매한 상품 전체 조회 API
 
+=== Request
+
+include::{snippets}/user/my-item/http-request.adoc[]
+
+=== Response
+
+include::{snippets}/user/my-item/http-response.adoc[]
+
+=== Response Field
+
+include::{snippets}/user/my-item/response-fields.adoc[]
+
+== 상품 생성 API
 
 === Request
 

@@ -3,6 +3,9 @@ package com.backend.pointsystem.controller;
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.dto.request.UpdateUserRequest;
+import com.backend.pointsystem.dto.response.MyPurchaseItemResponse;
+import com.backend.pointsystem.dto.response.MyPurchaseResponse;
+import com.backend.pointsystem.entity.PaymentMethod;
 import com.backend.pointsystem.exception.DuplicateUserException;
 import com.backend.pointsystem.exception.UserNotFoundException;
 import com.backend.pointsystem.security.WebSecurityConfig;
@@ -32,6 +35,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
@@ -39,10 +43,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -194,6 +196,37 @@ class UserControllerTest {
                                 fieldWithPath("name").description("변경할 이름"),
                                 fieldWithPath("asset").description("충전할 재산"))
                         ));
+    }
+
+    @Test
+    @DisplayName("내가 구매한 상품 목록 조회 - 성공")
+    void getMyItem() throws Exception {
+        //given
+        List<MyPurchaseResponse> myItems = List.of(new MyPurchaseResponse(1L, 1L, "우유", 10000, 2, PaymentMethod.MONEY),
+                new MyPurchaseResponse(1L, 2L, "계란", 60000, 10, PaymentMethod.MONEY),
+                new MyPurchaseResponse(2L, 3L, "찐빵", 20000, 4, PaymentMethod.POINT));
+
+        MyPurchaseItemResponse response = new MyPurchaseItemResponse(myItems);
+
+        given(userService.getMyItem()).willReturn(response);
+
+        //when
+        ResultActions result = mockMvc.perform(get("/api/users/my-item"));
+
+        //then
+        result.andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)))
+                .andDo(document("user/my-item",
+                        responseFields(
+                                fieldWithPath("myPurchaseResponses").description("내가 구매한 상품 목록"),
+                                fieldWithPath("myPurchaseResponses[].orderId").description("상품 주문 PK"),
+                                fieldWithPath("myPurchaseResponses[].itemId").description("상품 PK"),
+                                fieldWithPath("myPurchaseResponses[].itemName").description("상품 이름"),
+                                fieldWithPath("myPurchaseResponses[].totalPrice").description("상품 총 가격"),
+                                fieldWithPath("myPurchaseResponses[].count").description("상품 구매 개수"),
+                                fieldWithPath("myPurchaseResponses[].paymentMethod").description("결제 방법")
+                        )));
+
     }
 
 }
