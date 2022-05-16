@@ -4,6 +4,7 @@ import com.backend.pointsystem.common.UserUtil;
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.dto.request.UpdateUserRequest;
+import com.backend.pointsystem.dto.response.MyOrderResponse;
 import com.backend.pointsystem.dto.response.MyPurchaseItemResponse;
 import com.backend.pointsystem.dummy.ItemDummy;
 import com.backend.pointsystem.dummy.UserDummy;
@@ -159,6 +160,36 @@ class UserServiceTest {
 
         verify(userUtil, times(1)).findCurrentUser();
         verify(orderRepository, times(1)).findByUser(any(User.class));
+    }
+
+    @Test
+    @DisplayName("회원 주문 상품 단건 조회 - 성공")
+    void getMyOrder() {
+        //given
+        User user = UserDummy.dummyUser();
+
+        Item item1 = ItemDummy.itemDummy();
+        Item item2 = ItemDummy.itemDummy2();
+
+        List<OrderItem> orderItem = List.of(OrderItem.createOrderItem(item1, PaymentMethod.MONEY, 100000, 3),
+                OrderItem.createOrderItem(item2, PaymentMethod.MONEY, 1000, 3));
+
+        Order order = Order.createOrder(user, orderItem);
+
+        given(userUtil.findCurrentUser()).willReturn(user);
+        given(orderRepository.findByIdAndUser(anyLong(), any(User.class))).willReturn(Optional.of(order));
+
+        //when
+        MyOrderResponse response = userService.getMyOrder(1L);
+
+        //then
+        assertThat(response.getMyOrderOneResponses()).extracting("itemName")
+                .containsExactly("우유", "식빵");
+        assertThat(response.getMyOrderOneResponses()).extracting("totalPrice")
+                .containsExactly(100000, 1000);
+
+        verify(userUtil, times(1)).findCurrentUser();
+        verify(orderRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
     }
 
 }

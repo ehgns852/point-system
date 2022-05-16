@@ -4,6 +4,7 @@ import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.dto.request.UpdateUserRequest;
 import com.backend.pointsystem.dto.response.CreateUserResponse;
+import com.backend.pointsystem.dto.response.MyOrderResponse;
 import com.backend.pointsystem.dto.response.MyPurchaseItemResponse;
 import com.backend.pointsystem.security.jwt.Token;
 import com.backend.pointsystem.service.UserService;
@@ -40,11 +41,19 @@ public class UserController {
     }
 
     /**
-     * 내가 구매한 상품 조회
+     * 회원 주문 상품 전체 조회
      */
     @GetMapping("/my-item")
     public ResponseEntity<MyPurchaseItemResponse> getMyItem() {
         return ResponseEntity.ok(userService.getMyItem());
+    }
+
+    /**
+     * 회원 주문 상품 단건 조회
+     */
+    @GetMapping("/my-order/{orderId}")
+    public ResponseEntity<MyOrderResponse> getMyOrder(@PathVariable Long orderId) {
+        return ResponseEntity.ok(userService.getMyOrder(orderId));
     }
 
 }

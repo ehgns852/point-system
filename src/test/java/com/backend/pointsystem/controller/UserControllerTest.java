@@ -3,6 +3,8 @@ package com.backend.pointsystem.controller;
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.dto.request.UpdateUserRequest;
+import com.backend.pointsystem.dto.response.MyOrderOneResponse;
+import com.backend.pointsystem.dto.response.MyOrderResponse;
 import com.backend.pointsystem.dto.response.MyPurchaseItemResponse;
 import com.backend.pointsystem.dto.response.MyPurchaseResponse;
 import com.backend.pointsystem.entity.PaymentMethod;
@@ -226,7 +228,37 @@ class UserControllerTest {
                                 fieldWithPath("myPurchaseResponses[].count").description("상품 구매 개수"),
                                 fieldWithPath("myPurchaseResponses[].paymentMethod").description("결제 방법")
                         )));
+        verify(userService, times(1)).getMyItem();
+    }
 
+    @Test
+    @DisplayName("주문 단건 조회 - 성공")
+    void getMyOrder() throws Exception {
+        //given
+        List<MyOrderOneResponse> myOrder = List.of(new MyOrderOneResponse(1L, 1L, "우유", PaymentMethod.MONEY, 2, 20000),
+                new MyOrderOneResponse(1L, 2L, "계란", PaymentMethod.MONEY, 3, 20000));
+
+        MyOrderResponse response = new MyOrderResponse(myOrder);
+
+        given(userService.getMyOrder(anyLong())).willReturn(response);
+
+        //when
+        ResultActions result = mockMvc.perform(get("/api/users/my-order/1"));
+
+        //then
+        result.andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)))
+                .andDo(document("user/my-order",
+                        responseFields(
+                                fieldWithPath("myOrderOneResponses").description("해당 주문 상품 목록"),
+                                fieldWithPath("myOrderOneResponses[].orderId").description("주문 PK"),
+                                fieldWithPath("myOrderOneResponses[].itemId").description("상품 PK"),
+                                fieldWithPath("myOrderOneResponses[].itemName").description("상품명"),
+                                fieldWithPath("myOrderOneResponses[].paymentMethod").description("결제 수단"),
+                                fieldWithPath("myOrderOneResponses[].count").description("상품 개수"),
+                                fieldWithPath("myOrderOneResponses[].totalPrice").description("총 금액"))
+                ));
+        verify(userService, times(1)).getMyOrder(anyLong());
     }
 
 }

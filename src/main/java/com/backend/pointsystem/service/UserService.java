@@ -4,12 +4,15 @@ import com.backend.pointsystem.common.UserUtil;
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.dto.request.UpdateUserRequest;
+import com.backend.pointsystem.dto.response.MyOrderOneResponse;
+import com.backend.pointsystem.dto.response.MyOrderResponse;
 import com.backend.pointsystem.dto.response.MyPurchaseItemResponse;
 import com.backend.pointsystem.dto.response.MyPurchaseResponse;
 import com.backend.pointsystem.entity.Order;
 import com.backend.pointsystem.entity.OrderItem;
 import com.backend.pointsystem.entity.User;
 import com.backend.pointsystem.exception.DuplicateUserException;
+import com.backend.pointsystem.exception.OrderNotFountException;
 import com.backend.pointsystem.exception.UserNotFoundException;
 import com.backend.pointsystem.repository.OrderRepository;
 import com.backend.pointsystem.repository.UserRepository;
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -106,5 +110,22 @@ public class UserService {
         }
 
         return myPurchaseItems;
+    }
+
+    /**
+     * 주문 단건 조회
+     */
+    public MyOrderResponse getMyOrder(Long orderId) {
+        User user = userUtil.findCurrentUser();
+
+        Order order = orderRepository.findByIdAndUser(orderId, user)
+                .orElseThrow(() -> new OrderNotFountException("해당 주문을 찾지 못했습니다."));
+
+        List<MyOrderOneResponse> result = order.getOrderItems().stream()
+                .map(orderItem -> new MyOrderOneResponse(order.getId(), orderItem.getItem().getId(),
+                        orderItem.getItem().getName(), orderItem.getPaymentMethod(), orderItem.getCount(), orderItem.getTotalPrice()))
+                .collect(Collectors.toList());
+
+        return new MyOrderResponse(result);
     }
 }
