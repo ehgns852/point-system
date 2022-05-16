@@ -1,7 +1,9 @@
 package com.backend.pointsystem.service;
 
 import com.backend.pointsystem.dto.request.CreateItemRequest;
+import com.backend.pointsystem.dto.request.UpdateItemRequest;
 import com.backend.pointsystem.entity.Item;
+import com.backend.pointsystem.exception.ItemNotFoundException;
 import com.backend.pointsystem.exception.PointRatioSettingException;
 import com.backend.pointsystem.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +29,13 @@ public class ItemService {
     private Item addItem(CreateItemRequest request) {
         return Item.createItem(request.getItemName(), request.getPrice(), request.getStockQuantity(),
                 request.getPointRatio(), request.getOwner(), request.getItemStatus());
+    }
+
+    @Transactional
+    public void updateItem(UpdateItemRequest request) {
+        Item item = itemRepository.findById(request.getItemId())
+                .orElseThrow(() -> new ItemNotFoundException("해당 상품이 존재하지 않습니다."));
+
+        item.updateItem(request.getItemName(), request.getItemStatus(), request.getOwner(), request.getPrice(), request.getPointRatio(), request.getStockQuantity());
     }
 }

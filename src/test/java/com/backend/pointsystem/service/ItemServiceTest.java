@@ -1,6 +1,7 @@
 package com.backend.pointsystem.service;
 
 import com.backend.pointsystem.dto.request.CreateItemRequest;
+import com.backend.pointsystem.dto.request.UpdateItemRequest;
 import com.backend.pointsystem.dummy.ItemDummy;
 import com.backend.pointsystem.entity.Item;
 import com.backend.pointsystem.entity.ItemStatus;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -54,6 +57,26 @@ class ItemServiceTest {
                 "opusm", ItemStatus.SELL)))
                 .isInstanceOf(PointRatioSettingException.class);
 
+    }
+
+    @Test
+    @DisplayName("상품 수정 - 성공")
+    void updateItem() {
+        //given
+        Item item = ItemDummy.itemDummy();
+
+        UpdateItemRequest request = new UpdateItemRequest(1L, "새우깡", 1000, 100, 5, "ehgns", ItemStatus.SOLD_OUT);
+
+        given(itemRepository.findById(anyLong())).willReturn(Optional.of(item));
+
+        //when
+        itemService.updateItem(request);
+
+        //then
+        assertThat(item.getName()).isEqualTo(request.getItemName());
+        assertThat(item.getItemStatus()).isEqualTo(ItemStatus.SOLD_OUT);
+
+        verify(itemRepository, times(1)).findById(anyLong());
     }
 
 }

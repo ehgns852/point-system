@@ -82,4 +82,13 @@ public class Item extends BaseEntity {
 
         this.stockQuantity = restStock;
     }
+
+    public void updateItem(String itemName, ItemStatus itemStatus, String owner, Integer price, Integer pointRatio, Integer stockQuantity) {
+        this.name = itemName;
+        this.itemStatus = itemStatus;
+        this.owner = owner;
+        this.price = price;
+        this.pointRatio = pointRatio;
+        this.stockQuantity = stockQuantity;
+    }
 }

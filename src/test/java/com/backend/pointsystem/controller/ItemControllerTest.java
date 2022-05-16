@@ -1,6 +1,7 @@
 package com.backend.pointsystem.controller;
 
 import com.backend.pointsystem.dto.request.CreateItemRequest;
+import com.backend.pointsystem.dto.request.UpdateItemRequest;
 import com.backend.pointsystem.entity.ItemStatus;
 import com.backend.pointsystem.exception.PointRatioSettingException;
 import com.backend.pointsystem.security.WebSecurityConfig;
@@ -33,6 +34,7 @@ import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -119,6 +121,32 @@ class ItemControllerTest {
                 .andDo(document("item/create/fail"));
 
         verify(itemService, times(1)).createItem(any(CreateItemRequest.class));
+    }
+
+    @Test
+    @DisplayName("상품 수정 - 성공")
+    void updateItem() throws Exception {
+        //given
+        UpdateItemRequest request = new UpdateItemRequest(1L, "새우깡", 1000, 100, 5, "opusm", ItemStatus.SELL);
+
+        //when
+        ResultActions result = mockMvc.perform(patch("/api/items")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .content(objectMapper.writeValueAsString(request)));
+
+        //then
+        result.andExpect(status().isNoContent())
+                .andDo(document("item/update",
+                        requestFields(
+                                fieldWithPath("itemId").description("해당 상품 PK"),
+                                fieldWithPath("itemName").description("상품 이름"),
+                                fieldWithPath("price").description("상품 가격"),
+                                fieldWithPath("stockQuantity").description("상품 수량"),
+                                fieldWithPath("pointRatio").description("포인트 적립 비율"),
+                                fieldWithPath("owner").description("소유자"),
+                                fieldWithPath("itemStatus").description("상품 상태"))
+                ));
     }
 
 }

@@ -113,6 +113,20 @@ include::{snippets}/item/create/response-fields.adoc[]
 
 include::{snippets}/item/create/fail/http-response.adoc[]
 
+== 상품 수정 API
+
+=== Request
+
+include::{snippets}/item/update/http-request.adoc[]
+
+=== Request Field
+
+include::{snippets}/item/update/request-fields.adoc[]
+
+=== Response
+
+include::{snippets}/item/update/http-response.adoc[]
+
 == 주문 생성 API
 
 === Request

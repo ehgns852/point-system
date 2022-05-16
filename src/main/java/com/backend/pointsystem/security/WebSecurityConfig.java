@@ -56,6 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/users")
                 .antMatchers(HttpMethod.POST, "/api/users/login")
                 .antMatchers(HttpMethod.POST, "/api/items")
+                .antMatchers(HttpMethod.PATCH, "/api/items")
                 .antMatchers("/docs/**");
     }
 
