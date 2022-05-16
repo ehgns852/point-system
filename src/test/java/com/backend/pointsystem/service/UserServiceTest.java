@@ -4,6 +4,7 @@ import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.dummy.UserDummy;
 import com.backend.pointsystem.entity.User;
+import com.backend.pointsystem.exception.DuplicateUserException;
 import com.backend.pointsystem.exception.UserNotFoundException;
 import com.backend.pointsystem.repository.UserRepository;
 import com.backend.pointsystem.security.jwt.JwtProvider;
@@ -39,6 +40,7 @@ class UserServiceTest {
         //given
         User user = UserDummy.dummyUser();
 
+        given(userRepository.findByUsername(anyString())).willReturn(Optional.empty());
         given(userRepository.save(any(User.class))).willReturn(user);
 
         //when
@@ -46,7 +48,24 @@ class UserServiceTest {
 
         //then
         assertThat(response).isEqualTo(1L);
+
+        verify(userRepository, times(1)).findByUsername(anyString());
         verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("회원 가입 - 회원 ID가 중복된 경우 실패")
+    void signUpFail() {
+        //given
+        User user = UserDummy.dummyUser();
+        given(userRepository.findByUsername(anyString())).willReturn(Optional.of(user));
+
+        //when
+        assertThatThrownBy(() -> userService.signUp(new CreateUserRequest("김도훈", "ehgns852", "123123", 1000000)))
+                .isInstanceOf(DuplicateUserException.class);
+
+        //then
+        verify(userRepository, times(1)).findByUsername(anyString());
     }
 
     @Test

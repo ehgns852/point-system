@@ -22,6 +22,10 @@ include::{snippets}/user/create/http-response.adoc[]
 
 include::{snippets}/user/create/response-fields.adoc[]
 
+=== Response Failure Code - 회원 ID가 중복된 경우
+
+include::{snippets}/user/create/fail/http-response.adoc[]
+
 == 회원 로그인 API
 
 === Request

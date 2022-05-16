@@ -2,6 +2,7 @@ package com.backend.pointsystem.controller;
 
 import com.backend.pointsystem.dto.request.CreateUserRequest;
 import com.backend.pointsystem.dto.request.LoginRequest;
+import com.backend.pointsystem.exception.DuplicateUserException;
 import com.backend.pointsystem.exception.UserNotFoundException;
 import com.backend.pointsystem.security.WebSecurityConfig;
 import com.backend.pointsystem.security.jwt.JwtAuthenticationFilter;
@@ -98,7 +99,27 @@ class UserControllerTest {
                         )));
 
         verify(userService, times(1)).signUp(any(CreateUserRequest.class));
+    }
 
+    @Test
+    @DisplayName("유저 회원가입 - 회원 ID가 중복된 경우 실패")
+    void accountUserFail() throws Exception {
+        //given
+
+        doThrow(new DuplicateUserException("이미 존재하는 ID 입니다."))
+                .when(userService).signUp(any(CreateUserRequest.class));
+
+        //when
+        ResultActions result = mockMvc.perform(post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .content(objectMapper.writeValueAsString(new CreateUserRequest("도훈", "ehgns852", "123123", 100000))));
+
+        //then
+        result.andExpect(status().isBadRequest())
+                .andDo(document("user/create/fail"));
+        
+        verify(userService, times(1)).signUp(any(CreateUserRequest.class));
     }
 
     @Test
