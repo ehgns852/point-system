@@ -75,7 +75,8 @@ public class CartService {
                 .orElseThrow(() -> new CartNotFoundException("회원의 장바구니가 존재하지 않습니다."));
         Item item = getItem(itemId);
 
-        cartItemRepository.delete(cartItemRepository.findByCartAndItem(cart, item)
+        cartItemRepository.delete(
+                cartItemRepository.findByCartAndItem(cart, item)
                 .orElseThrow(() -> new CartItemNotFountException("회원의 장바구니 상품을 찾을 수 없습니다.")));
     }
 
@@ -87,6 +88,7 @@ public class CartService {
                 .orElseThrow(() -> new CartNotFoundException("회원의 장바구니가 존재하지 않습니다."));
 
         List<CartItem> cartItems = cartItemRepository.findByCart(cart);
+
 
         return orderService.createOrderByMyCart(cartItems, request.getPaymentMethod(), user);
     }
