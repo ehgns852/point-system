@@ -6,6 +6,7 @@ import com.backend.pointsystem.dto.request.LoginRequest;
 import com.backend.pointsystem.dto.request.UpdateUserRequest;
 import com.backend.pointsystem.dto.response.MyOrderResponse;
 import com.backend.pointsystem.dto.response.MyPurchaseItemResponse;
+import com.backend.pointsystem.dto.response.MyPurchaseResponse;
 import com.backend.pointsystem.dummy.ItemDummy;
 import com.backend.pointsystem.dummy.UserDummy;
 import com.backend.pointsystem.entity.*;
@@ -138,28 +139,23 @@ class UserServiceTest {
         //given
         User user = UserDummy.dummyUser();
 
-        Item item1 = ItemDummy.itemDummy();
-        Item item2 = ItemDummy.itemDummy2();
-
-        List<OrderItem> orderItem = List.of(OrderItem.createOrderItem(item1, PaymentMethod.MONEY, 100000, 3),
-                OrderItem.createOrderItem(item2, PaymentMethod.MONEY, 1000, 3));
-
-        List<Order> order = List.of(Order.createOrder(user, orderItem));
+        List<MyPurchaseResponse> orders = List.of(new MyPurchaseResponse(1L, 1L, "새우깡", 10000, 10, PaymentMethod.MONEY),
+                new MyPurchaseResponse(2L, 2L, "우유", 20000, 5, PaymentMethod.MONEY));
 
         given(userUtil.findCurrentUser()).willReturn(user);
-        given(orderRepository.findByUser(any(User.class))).willReturn(order);
+        given(orderRepository.findMyOrders(anyLong())).willReturn(orders);
 
         //when
         MyPurchaseItemResponse response = userService.getMyItem();
 
         //then
         assertThat(response.getMyPurchaseResponses()).extracting("itemName")
-                .containsExactly("우유", "식빵");
+                .containsExactly("새우깡", "우유");
         assertThat(response.getMyPurchaseResponses()).extracting("totalPrice")
-                .containsExactly(100000, 1000);
+                .containsExactly(10000, 20000);
 
         verify(userUtil, times(1)).findCurrentUser();
-        verify(orderRepository, times(1)).findByUser(any(User.class));
+        verify(orderRepository, times(1)).findMyOrders(anyLong());
     }
 
     @Test

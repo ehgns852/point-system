@@ -90,26 +90,9 @@ public class UserService {
     public MyPurchaseItemResponse getMyItem() {
         User user = userUtil.findCurrentUser();
 
-        List<Order> orders = orderRepository.findByUser(user);
-
-        List<MyPurchaseResponse> myPurchaseItems = getMyPurchaseResponses(orders);
+        List<MyPurchaseResponse> myPurchaseItems = orderRepository.findMyOrders(user.getId());
 
         return new MyPurchaseItemResponse(myPurchaseItems);
-    }
-
-    private List<MyPurchaseResponse> getMyPurchaseResponses(List<Order> orders) {
-
-        List<MyPurchaseResponse> myPurchaseItems = new ArrayList<>();
-
-        for (Order order : orders) {
-            for (OrderItem orderItem : order.getOrderItems()) {
-                MyPurchaseResponse items = new MyPurchaseResponse(order.getId(), orderItem.getItem().getId(), orderItem.getItem().getName(),
-                        orderItem.getTotalPrice(), orderItem.getCount(), orderItem.getPaymentMethod());
-                myPurchaseItems.add(items);
-            }
-        }
-
-        return myPurchaseItems;
     }
 
     /**
