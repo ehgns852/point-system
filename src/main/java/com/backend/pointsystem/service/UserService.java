@@ -90,9 +90,7 @@ public class UserService {
     public MyPurchaseItemResponse getMyItem() {
         User user = userUtil.findCurrentUser();
 
-        List<MyPurchaseResponse> myPurchaseItems = orderRepository.findMyOrders(user.getId());
-
-        return new MyPurchaseItemResponse(myPurchaseItems);
+        return new MyPurchaseItemResponse(orderRepository.findMyOrders(user.getId()));
     }
 
     /**
